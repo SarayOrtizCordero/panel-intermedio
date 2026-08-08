@@ -72,4 +72,4 @@ primer render.
   producto — la UI no lo valida automáticamente, solo lo mantiene
   consistente a partir de esa igualdad inicial.
 - No hay multi-almacén, lotes, código de barras ni módulo financiero — eso
-  vive en [`completo/`](../completo/README.md).
+  vive en [`completo/`](https://github.com/SarayOrtizCordero/panel-completo/blob/main/README.md).
