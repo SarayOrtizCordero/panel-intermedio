@@ -1,6 +1,6 @@
 # Panel de Inventario — Intermedio
 
-Demo estática que añade contexto de negocio al nivel [`básico`](../basico/README.md):
+Demo estática que añade contexto de negocio al nivel [`básico`](https://github.com/SarayOrtizCordero/panel-intermedio/blob/main/README.md):
 de dónde viene el stock, cómo se mueve, y variantes de producto. Sin backend,
 sin build step — HTML + CSS + JS vainilla, organizado en pestañas.
 
