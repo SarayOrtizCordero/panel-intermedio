@@ -13,7 +13,15 @@ const IMPORT_PRODUCT_NAMES = [
   "Chaleco acolchado", "Camisa de lino", "Short deportivo", "Blazer casual", "Jersey trenzado",
 ];
 
-let importCounter = 1000;
+// Semilla a partir de la hora actual (no un contador fijo) para que los SKU
+// generados no choquen con los de una importación anterior ya guardada en
+// la base de datos.
+let importCounter = Date.now();
+
+function nextImportSku() {
+  importCounter++;
+  return `IMP-${importCounter.toString(36).toUpperCase()}`;
+}
 
 function openImportModal() {
   showImportState("idle");
@@ -57,15 +65,13 @@ function startImport() {
 function generateFakeProducts(n) {
   const products = [];
   for (let i = 0; i < n; i++) {
-    importCounter++;
     const name = IMPORT_PRODUCT_NAMES[i % IMPORT_PRODUCT_NAMES.length];
     const tanda = Math.floor(i / IMPORT_PRODUCT_NAMES.length) + 1;
     const proveedor = PROVEEDORES[i % PROVEEDORES.length];
 
     products.push({
-      id: importCounter,
       nombre: `${name} ${tanda}`,
-      sku: `IMP-${String(importCounter).padStart(4, "0")}`,
+      sku: nextImportSku(),
       stock: Math.floor(Math.random() * 40) + 1,
       stockMinimo: Math.floor(Math.random() * 8) + 3,
       proveedorId: proveedor.id,
@@ -75,21 +81,29 @@ function generateFakeProducts(n) {
   return products;
 }
 
-function finishImport() {
-  const added = generateFakeProducts(50);
-  PRODUCTS.push(...added);
+async function finishImport() {
+  const generated = generateFakeProducts(50);
 
-  importSuccessCount.textContent = added.length;
-  showImportState("success");
+  try {
+    const added = await insertProductsBatch(generated);
+    PRODUCTS.push(...added);
 
-  setTimeout(() => {
-    closeImportModal();
-    renderProductsTable();
-    updateDashboardStats();
-    renderCharts();
-    renderSuppliers();
-    showToast(`${added.length} productos importados correctamente`);
-  }, 900);
+    importSuccessCount.textContent = added.length;
+    showImportState("success");
+
+    setTimeout(() => {
+      closeImportModal();
+      renderProductsTable();
+      updateDashboardStats();
+      renderCharts();
+      renderSuppliers();
+      showToast(`${added.length} productos importados correctamente`);
+    }, 900);
+  } catch (error) {
+    console.error(error);
+    showImportState("idle");
+    showToast("No se pudo completar la importación. Inténtalo de nuevo.");
+  }
 }
 
 let toastTimer = null;

@@ -11,7 +11,19 @@ navButtons.forEach((btn) => {
   });
 });
 
-renderProductsTable();
-updateDashboardStats();
-renderCharts();
-renderSuppliers();
+// --- Carga inicial (se dispara desde auth.js tras iniciar sesión) ---
+async function initApp() {
+  productsBody.innerHTML = '<tr><td colspan="6" class="table-loading">Cargando productos…</td></tr>';
+  try {
+    await fetchProveedores();
+    await fetchProducts();
+    renderProductsTable();
+    updateDashboardStats();
+    renderCharts();
+    renderSuppliers();
+  } catch (error) {
+    console.error(error);
+    productsBody.innerHTML = '<tr><td colspan="6" class="table-loading">No se pudieron cargar los productos. Recarga la página.</td></tr>';
+    showToast("No se pudieron cargar los productos.");
+  }
+}

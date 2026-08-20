@@ -96,9 +96,21 @@ function changeProductStock(id, delta) {
   const product = PRODUCTS.find((p) => p.id === id);
   if (!product) return;
 
-  product.stock = Math.max(0, product.stock + delta);
+  const previousStock = product.stock;
+  const newStock = Math.max(0, product.stock + delta);
+  if (newStock === previousStock) return;
+
+  product.stock = newStock;
   updateProductRowDOM(product);
   updateDashboardStats();
+
+  updateProductStock(id, newStock).catch((error) => {
+    console.error(error);
+    product.stock = previousStock;
+    updateProductRowDOM(product);
+    updateDashboardStats();
+    showToast("No se pudo guardar el cambio de stock. Inténtalo de nuevo.");
+  });
 }
 
 productsBody.addEventListener("click", (event) => {

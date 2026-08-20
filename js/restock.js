@@ -59,7 +59,7 @@ function closeAddProductModal() {
   addProductModal.classList.remove("open");
 }
 
-addProductForm.addEventListener("submit", (event) => {
+addProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const nombre = document.getElementById("newProductNombre").value.trim();
   const sku = document.getElementById("newProductSku").value.trim();
@@ -68,14 +68,25 @@ addProductForm.addEventListener("submit", (event) => {
   const proveedorId = Number(newProductProveedor.value);
   if (!nombre || !sku) return;
 
-  const id = PRODUCTS.reduce((max, p) => Math.max(max, p.id), 0) + 1;
-  PRODUCTS.push({ id, nombre, sku, stock, stockMinimo, proveedorId, ventasMes: 0 });
+  const submitBtn = addProductForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
 
-  renderProductsTable();
-  updateDashboardStats();
-  renderSuppliers();
-  closeAddProductModal();
-  showToast(`${nombre} añadido al inventario`);
+  try {
+    const product = await insertProduct({ nombre, sku, stock, stockMinimo, proveedorId });
+    PRODUCTS.push(product);
+
+    renderProductsTable();
+    updateDashboardStats();
+    renderSuppliers();
+    closeAddProductModal();
+    showToast(`${nombre} añadido al inventario`);
+  } catch (error) {
+    console.error(error);
+    const message = error.code === "23505" ? "Ya existe un producto con ese SKU." : "No se pudo añadir el producto. Inténtalo de nuevo.";
+    showToast(message);
+  } finally {
+    submitBtn.disabled = false;
+  }
 });
 
 document.getElementById("addProductOpenBtn").addEventListener("click", openAddProductModal);

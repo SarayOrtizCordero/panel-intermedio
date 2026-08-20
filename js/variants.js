@@ -49,6 +49,9 @@ variantsBody.addEventListener("click", (event) => {
   const variant = product.variantes[vi];
   const isIncrement = btn.dataset.action === "inc";
 
+  const previousVariantStock = variant.stock;
+  const previousProductStock = product.stock;
+
   variant.stock = Math.max(0, variant.stock + (isIncrement ? 1 : -1));
   flashButton(btn, isIncrement);
 
@@ -59,6 +62,19 @@ variantsBody.addEventListener("click", (event) => {
   product.stock = product.variantes.reduce((sum, v) => sum + v.stock, 0);
   updateProductRowDOM(product);
   updateDashboardStats();
+
+  Promise.all([
+    updateVariantStock(variant.id, variant.stock),
+    updateProductStock(product.id, product.stock),
+  ]).catch((error) => {
+    console.error(error);
+    variant.stock = previousVariantStock;
+    product.stock = previousProductStock;
+    stockEl.textContent = variant.stock;
+    updateProductRowDOM(product);
+    updateDashboardStats();
+    showToast("No se pudo guardar el cambio de stock. Inténtalo de nuevo.");
+  });
 });
 
 document.getElementById("variantsClose").addEventListener("click", closeVariantsModal);
