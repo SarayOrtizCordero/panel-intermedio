@@ -546,7 +546,14 @@ body {
 
 .col-photo { width: 56px; }
 .col-proveedor { font-size: 13px; color: var(--text-muted); }
-.col-actions { width: 170px; }
+.col-actions {
+  width: 170px;
+  /* Con la tabla al 100% de ancho, el layout automático prefiere partir
+     los botones en varias líneas antes que dejar la tabla desbordar (que
+     es lo que .table-wrap ya permite con scroll horizontal). nowrap fuerza
+     a que sea la tabla la que desborde, no los botones los que se apilen. */
+  white-space: nowrap;
+}
 
 .table-loading {
   text-align: center;
@@ -602,6 +609,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
   margin-right: 6px;
   transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
@@ -656,6 +664,15 @@ body {
   cursor: pointer;
   transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   line-height: 1;
+  /* inline-flex + centrado, igual que .btn-restock — si no, el botón de
+     texto (−/+) y el de icono (svg) quedan a distinta altura al alinearse
+     por "vertical-align: baseline" por defecto, cada uno con su propia
+     línea base. vertical-align: middle además evita que el propio botón
+     quede desplazado respecto a los botones vecinos dentro de la celda. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 .btn-qty:hover { border-color: var(--primary); color: var(--primary); }
