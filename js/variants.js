@@ -28,8 +28,8 @@ function renderVariantsGrid(product) {
     row.className = "variant-row";
     row.style.animationDelay = `${i * 0.05}s`;
     row.innerHTML = `
-      <span class="variant-chip">${v.talla}</span>
-      <span class="variant-color"><i class="color-dot" style="background:${COLOR_HEX[v.color] || "#c7c7c7"}"></i>${v.color}</span>
+      <span class="variant-chip">${escapeHtml(v.talla)}</span>
+      <span class="variant-color"><i class="color-dot" style="background:${COLOR_HEX[v.color] || "#c7c7c7"}"></i>${escapeHtml(v.color)}</span>
       <span class="stock-value" id="variant-stock-${product.id}-${i}">${v.stock}</span>
       <span class="variant-actions">
         <button class="btn-qty btn-minus" data-vi="${i}" data-action="dec" aria-label="Restar unidad">−</button>

@@ -43,7 +43,7 @@ const addProductForm = document.getElementById("addProductForm");
 const newProductProveedor = document.getElementById("newProductProveedor");
 
 function populateProveedorSelect() {
-  newProductProveedor.innerHTML = PROVEEDORES.map((pr) => `<option value="${pr.id}">${pr.nombre}</option>`).join("");
+  newProductProveedor.innerHTML = PROVEEDORES.map((pr) => `<option value="${pr.id}">${escapeHtml(pr.nombre)}</option>`).join("");
 }
 
 function openAddProductModal() {

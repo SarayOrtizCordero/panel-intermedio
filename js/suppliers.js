@@ -11,10 +11,10 @@ function renderSuppliers() {
     card.style.animationDelay = `${index * 0.06}s`;
     card.innerHTML = `
       <button class="supplier-header" data-id="${prov.id}">
-        <span class="supplier-avatar">${prov.nombre[0]}</span>
+        <span class="supplier-avatar">${escapeHtml(prov.nombre[0] || "?")}</span>
         <span class="supplier-info">
-          <span class="supplier-name">${prov.nombre}</span>
-          <span class="supplier-meta">${productos.length} producto${productos.length === 1 ? "" : "s"} · ${prov.contacto}</span>
+          <span class="supplier-name">${escapeHtml(prov.nombre)}</span>
+          <span class="supplier-meta">${productos.length} producto${productos.length === 1 ? "" : "s"} · ${escapeHtml(prov.contacto)}</span>
         </span>
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </button>
@@ -23,8 +23,8 @@ function renderSuppliers() {
           ${productos.length
             ? productos.map((p) => `
                 <div class="supplier-product-row">
-                  <span class="supplier-product-name">${p.nombre}</span>
-                  <span class="sku">${p.sku}</span>
+                  <span class="supplier-product-name">${escapeHtml(p.nombre)}</span>
+                  <span class="sku">${escapeHtml(p.sku)}</span>
                   <span class="stock-value">${p.stock} uds.</span>
                 </div>
               `).join("")

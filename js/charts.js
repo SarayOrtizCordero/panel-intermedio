@@ -6,7 +6,7 @@ function renderBarChart(container, items, color) {
     const row = document.createElement("div");
     row.className = "bar-row";
     row.innerHTML = `
-      <span class="bar-label">${item.nombre}</span>
+      <span class="bar-label">${escapeHtml(item.nombre)}</span>
       <span class="bar-track"><span class="bar-fill"></span></span>
       <span class="bar-value">${item.value}</span>
     `;

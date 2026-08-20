@@ -1,3 +1,16 @@
+// Escapa texto antes de insertarlo en innerHTML — nombre, SKU, proveedor y
+// variantes vienen de datos guardados por usuarios (o de la base de datos),
+// nunca deben tratarse como HTML de confianza.
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]));
+}
+
 // Acceso a datos vía Supabase. PROVEEDORES/PRODUCTS viven en memoria como
 // caché local (así el resto de app.js no cambia) pero la fuente real son las
 // tablas "proveedores" / "products" / "variantes" — ver supabase/schema.sql.
