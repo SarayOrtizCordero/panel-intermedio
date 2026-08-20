@@ -2,9 +2,8 @@ const AVATAR_COLORS = 6;
 const productsBody = document.getElementById("productsBody");
 
 function getInitials(nombre) {
-  return nombre
-    .split(" ")
-    .filter(Boolean)
+  const words = nombre.match(/[\p{L}\p{N}]+/gu) || [];
+  return words
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join("");

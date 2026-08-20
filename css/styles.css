@@ -3,9 +3,9 @@
      el tono original, usado tal cual como texto o fondo de botón, no
      alcanza el contraste mínimo de accesibilidad (WCAG AA 4.5:1) sobre
      fondos claros — ver notas al final del archivo. */
-  --primary: #a83610;
+  --primary: #b64211;
   --primary-strong: #df3314;
-  --primary-soft: rgba(251, 123, 21, 0.12);
+  --primary-soft: rgba(251, 123, 21, 0.08);
   --on-primary: #ffffff;
   --danger: #b11e1b;
   --danger-soft: rgba(177, 30, 27, 0.1);
