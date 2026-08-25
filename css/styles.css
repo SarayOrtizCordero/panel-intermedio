@@ -744,6 +744,7 @@ body {
   border: none;
   background: none;
   font-family: inherit;
+  color: inherit;
   cursor: pointer;
   text-align: left;
 }
