@@ -100,3 +100,21 @@ async function insertProductsBatch(rows) {
   if (error) throw error;
   return data.map(mapProductRow);
 }
+
+async function upsertProductsChunk(rows) {
+  const payload = rows.map(({ nombre, sku, stock, stockMinimo, proveedorId }) => ({
+    nombre,
+    sku,
+    stock,
+    stock_minimo: stockMinimo,
+    proveedor_id: proveedorId,
+  }));
+
+  const { data, error } = await db
+    .from("products")
+    .upsert(payload, { onConflict: "sku" })
+    .select("id, nombre, sku, stock, stock_minimo, proveedor_id, ventas_mes, variantes(id, talla, color, stock)");
+
+  if (error) throw error;
+  return data.map(mapProductRow);
+}
