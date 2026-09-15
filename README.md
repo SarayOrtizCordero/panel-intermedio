@@ -3,15 +3,22 @@
 Panel de inventario funcional que añade contexto de negocio al nivel
 [`básico`](https://github.com/SarayOrtizCordero/panel-basico/blob/main/README.md):
 de dónde viene el stock, cómo se mueve, y variantes de producto. Login y
-datos persistidos en una base de datos real (Supabase / Postgres). Sin
-build step — HTML + CSS + JS vainilla, más el SDK de Supabase por CDN.
+datos persistidos en el propio navegador (`localStorage`). Sin build step —
+HTML + CSS + JS vainilla.
+
+> **Sin backend por ahora:** este panel usaba Supabase (Postgres + Auth real),
+> pero el proyecto gratuito se quedó sin plan y se pausó. Mientras se decide
+> si se retoma esa migración, el login usa un usuario y contraseña fijos
+> comprobados en el propio código (`js/config.js`) y los datos se guardan en
+> `localStorage` en vez de en una base de datos — o sea, sin seguridad real y
+> los datos solo viven en este navegador. `supabase/schema.sql` se deja tal
+> cual para cuando se retome esa migración.
 
 ## Funcionalidades
 
 - **Acceso con usuario y contraseña:** el inventario solo es visible tras
-  iniciar sesión (Supabase Auth). Sin sesión no se puede ni leer ni escribir
-  ningún dato — lo aplica la Row Level Security de la base de datos, no solo
-  la pantalla de login.
+  iniciar sesión. Por ahora es una comprobación fija en el propio navegador
+  (ver nota de arriba), no una autenticación real de servidor.
 - **Modo claro / oscuro:** botón en la cabecera que cambia el tema y lo
   recuerda entre visitas; por defecto siempre es claro.
 - **Dashboard con analíticas:** dos gráficos de barras horizontales (SVG/CSS,
@@ -28,23 +35,11 @@ build step — HTML + CSS + JS vainilla, más el SDK de Supabase por CDN.
   simula la subida de un archivo con una barra de progreso de ~2s y **inserta
   de verdad** 50 productos generados en la base de datos.
 
-## Configuración de Supabase (una sola vez)
+## Cómo entrar
 
-1. Crea una cuenta y un proyecto gratuito en [supabase.com](https://supabase.com).
-2. En el proyecto, ve a **SQL Editor** → pega y ejecuta todo el contenido de
-   [`supabase/schema.sql`](supabase/schema.sql). Esto crea las tablas
-   `proveedores`, `products` y `variantes`, activa la Row Level Security y
-   carga los datos de ejemplo (4 proveedores, 10 productos, sus variantes).
-3. Ve a **Authentication → Providers → Email** y desactiva **"Allow new
-   users to sign up"**. Importante: sin este paso, cualquiera con la anon
-   key podría crearse una cuenta propia y entrar al panel.
-4. Ve a **Authentication → Users → Add user** y crea la cuenta con la que
-   entrará el cliente (correo + contraseña). Ese es el login del panel —
-   no hay registro público.
-5. Ve a **Project Settings → API** y copia la **Project URL** y la **anon /
-   public key**.
-6. Pégalos en [`js/config.js`](js/config.js), sustituyendo los marcadores
-   `TU-PROYECTO` y `TU-ANON-KEY`.
+Entra con el usuario y contraseña definidos en [`js/config.js`](js/config.js)
+(`DEMO_LOGIN_EMAIL` / `DEMO_LOGIN_PASSWORD`). Cámbialos ahí si quieres otras
+credenciales — no hay registro ni servidor, solo se comparan en el navegador.
 
 ## Cómo previsualizar
 
@@ -62,11 +57,10 @@ intermedio/
 ├── css/
 │   └── styles.css        Variables de color (claro/oscuro), login, tabs, tabla, gráficos, modales
 ├── supabase/
-│   └── schema.sql          proveedores + products + variantes, RLS y datos de ejemplo
+│   └── schema.sql          proveedores + products + variantes, RLS y datos de ejemplo (sin usar por ahora, ver nota al principio)
 └── js/
-    ├── config.js            URL y anon key de tu proyecto Supabase (a rellenar)
-    ├── supabaseClient.js     Inicializa el cliente ("db")
-    ├── data.js                fetch/insert/update de proveedores, productos y variantes
+    ├── config.js            Usuario y contraseña fijos del login de demo
+    ├── data.js                fetch/insert/update de proveedores, productos y variantes contra localStorage
     ├── auth.js                 Login, logout y qué pantalla se muestra
     ├── theme.js                 Toggle de modo claro/oscuro
     ├── charts.js                 Gráficos de barras (top ventas / stock muerto)
@@ -95,8 +89,8 @@ intermedio/
 - Los SKU generados por la importación simulada usan la hora actual como
   semilla (no un contador fijo), para no chocar con SKU de una importación
   anterior ya guardada en la base de datos.
-- La anon key en `js/config.js` está pensada para ir en el navegador — no es
-  un secreto por sí sola. Quien de verdad protege los datos es la Row Level
-  Security del esquema (`to authenticated`), no la key.
+- El usuario/contraseña de `js/config.js` y los datos de `localStorage` son
+  solo para la demo — cualquiera con el código fuente puede leerlos o editar
+  el storage del navegador. No uses este login tal cual con datos reales.
 - No hay multi-almacén, lotes, código de barras ni módulo financiero — eso
   vive en [`completo/`](https://github.com/SarayOrtizCordero/panel-completo/blob/main/README.md).
